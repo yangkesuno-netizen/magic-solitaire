@@ -1,0 +1,93 @@
+name: Quality Gates v3.1 - Intelligent & Strict
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  quality-check:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install ast-unparse
+    
+    - name: Run Quality Gates v3.1
+      run: |
+        echo "Running Intelligent Quality Gates v3.1..."
+        python batch_quality_check_v31.py
+      continue-on-error: false
+    
+    - name: Upload Quality Report
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: quality-report-v31
+        path: quality_report_v31.json
+    
+    - name: Check Quality Gates
+      run: |
+        python -c "
+        import json
+        import sys
+        
+        with open('quality_report_v31.json') as f:
+            report = json.load(f)
+        
+        summary = report['summary']
+        
+        print('=' * 70)
+        print('Quality Gates v3.1 - Final Check')
+        print('=' * 70)
+        print(f\"Files: {summary['total']}\")
+        print(f\"Passed: {summary['passed']} ({summary['passed']/summary['total']*100:.1f}%)\")
+        print(f\"Failed: {summary['failed']}\")
+        print(f\"Average Score: {summary['avg_score']:.2f}/10\")
+        print(f\"Critical Issues: {summary.get('critical_issues', 0)}\")
+        print('=' * 70)
+        
+        # Gates
+        gates_passed = True
+        
+        # Gate 1: Min score >= 9.0
+        if summary['avg_score'] < 9.0:
+            print('FAIL: Average score < 9.0')
+            gates_passed = False
+        else:
+            print('PASS: Average score >= 9.0')
+        
+        # Gate 2: Pass rate >= 95%
+        pass_rate = summary['passed'] / summary['total']
+        if pass_rate < 0.95:
+            print('FAIL: Pass rate < 95%')
+            gates_passed = False
+        else:
+            print('PASS: Pass rate >= 95%')
+        
+        # Gate 3: No critical issues
+        if summary.get('critical_issues', 0) > 0:
+            print('FAIL: Critical issues found')
+            gates_passed = False
+        else:
+            print('PASS: No critical issues')
+        
+        print('=' * 70)
+        
+        if gates_passed:
+            print('All quality gates PASSED')
+            sys.exit(0)
+        else:
+            print('Some quality gates FAILED')
+            sys.exit(1)
+        "

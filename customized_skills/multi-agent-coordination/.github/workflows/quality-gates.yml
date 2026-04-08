@@ -1,0 +1,83 @@
+name: Quality Gates v2.0
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  quality-check:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt || true
+    
+    - name: Run Quality Gates v2.0
+      run: |
+        python -c "
+        import sys
+        import os
+        sys.path.insert(0, '.')
+        from quality_gates_v2 import enforce_quality, QualityError
+        
+        # 获取所有Python文件
+        python_files = []
+        for root, dirs, files in os.walk('.'):
+            # 跳过隐藏目录和测试目录
+            dirs[:] = [d for d in dirs if not d.startswith('.') and d != '__pycache__']
+            for file in files:
+                if file.endswith('.py') and not file.startswith('test_'):
+                    python_files.append(os.path.join(root, file))
+        
+        print(f'Checking {len(python_files)} Python files...')
+        print('='*60)
+        
+        failed = []
+        passed = []
+        
+        for file_path in python_files:
+            try:
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    code = f.read()
+                
+                # 跳过空文件
+                if not code.strip():
+                    continue
+                
+                report = enforce_quality(code, file_path, min_score=9.0)
+                print(f'[PASS] {file_path}: {report.score:.1f}/10')
+                passed.append((file_path, report.score))
+            except QualityError as e:
+                print(f'[FAIL] {file_path}: {e}')
+                failed.append(file_path)
+            except Exception as e:
+                print(f'[ERROR] {file_path}: {e}')
+                failed.append(file_path)
+        
+        print('='*60)
+        print(f'Results: {len(passed)} passed, {len(failed)} failed')
+        
+        if failed:
+            print(f'\\n❌ Quality check failed for {len(failed)} files')
+            sys.exit(1)
+        
+        print('\\n✅ All quality checks passed!')
+        
+        # 显示平均分
+        if passed:
+            avg_score = sum(s for _, s in passed) / len(passed)
+            print(f'Average score: {avg_score:.2f}/10')
+        
+        sys.exit(0)
+        "

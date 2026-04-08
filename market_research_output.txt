@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "C:\Users\User\.copaw\workspaces\default\market_research_task.py", line 284, in <module>
+    print(report)
+UnicodeEncodeError: 'gbk' codec can't encode character '\U0001f4ca' in position 4: illegal multibyte sequence

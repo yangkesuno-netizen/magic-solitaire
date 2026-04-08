@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "skills": {
+    "write-xiaohongshu": {
+      "source": "adjfks/corner-skills",
+      "sourceType": "github",
+      "computedHash": "0d8abcc4ebea4ad58e975692e3ca43b44735a73e3f0535f23c9b13ba821a3faf"
+    },
+    "xiaohongshu": {
+      "source": "zhjiang22/openclaw-xhs",
+      "sourceType": "github",
+      "computedHash": "c9dd3d311539d483df91c558a7925dccdd73ad004b7120bf0bc163d8ea5e63e5"
+    },
+    "xiaohongshu-note-analyzer": {
+      "source": "softbread/xiaohongshu-doctor",
+      "sourceType": "github",
+      "computedHash": "5d5027d2d62b69dc7590bcd272ae25ce90e80ecdcb753161cb9023048ccf8255"
+    }
+  }
+}

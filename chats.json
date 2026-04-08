@@ -1,0 +1,45 @@
+{
+  "chats": [
+    {
+      "channel": "console",
+      "created_at": "2026-03-24T09:32:45.892281Z",
+      "id": "d289bacf-d41d-4d70-abd1-4c5844f25285",
+      "meta": {},
+      "name": "我想开家你是核心员工",
+      "session_id": "1774344407073",
+      "updated_at": "2026-03-26T16:11:04.989966Z",
+      "user_id": "default"
+    },
+    {
+      "channel": "console",
+      "created_at": "2026-04-05T14:20:21.308109Z",
+      "id": "a5f3f8a9-017a-4be5-bc4b-0902eb7d841f",
+      "meta": {},
+      "name": "我想搭建一个ai a",
+      "session_id": "1775398765523",
+      "updated_at": "2026-04-06T07:44:15.154879Z",
+      "user_id": "default"
+    },
+    {
+      "channel": "console",
+      "created_at": "2026-04-07T07:15:04.206659Z",
+      "id": "abb0b79e-e130-4f21-bb3e-d389df7ffc9e",
+      "meta": {},
+      "name": "检查一下安装的小红书",
+      "session_id": "1775546062607",
+      "updated_at": "2026-04-07T07:27:07.931184Z",
+      "user_id": "default"
+    },
+    {
+      "channel": "console",
+      "created_at": "2026-04-07T08:23:44.317298Z",
+      "id": "c75d70e6-2cc1-476e-8fca-04f666698e61",
+      "meta": {},
+      "name": "你的灵魂和基因是什么",
+      "session_id": "1775550209433",
+      "updated_at": "2026-04-08T09:01:32.964612Z",
+      "user_id": "default"
+    }
+  ],
+  "version": 1
+}
