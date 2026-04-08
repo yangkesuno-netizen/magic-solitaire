@@ -296,7 +296,6 @@ describe('CardStack Logic Tests', () => {
 
       cards.forEach(card => stack.addCard(card));
       
-      const originalOrder = stack.getCards();
       stack.shuffle();
       const shuffledOrder = stack.getCards();
 

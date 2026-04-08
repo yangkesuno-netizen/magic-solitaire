@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import './style.css';
 import { CardTestScene } from './CardTestScene';
 import { CardStackTestScene } from './CardStackTestScene';
+import { TriPeaksScene } from './TriPeaksScene';
 
 // Main Game Scene
 class MainScene extends Phaser.Scene {
@@ -37,7 +38,7 @@ class MainScene extends Phaser.Scene {
       .on('pointerover', () => startButton.setFillStyle(0x005a9e))
       .on('pointerout', () => startButton.setFillStyle(0x0075ca))
       .on('pointerdown', () => {
-        console.log('Game started!');
+        this.scene.start('TriPeaksScene');
       });
 
     this.add.text(width / 2, height * 0.65, 'START GAME', {
@@ -101,7 +102,7 @@ const config: Phaser.Types.Core.GameConfig = {
   height: window.innerHeight,
   parent: 'app',
   backgroundColor: '#1a1a2e',
-  scene: [MainScene, CardTestScene, CardStackTestScene],
+  scene: [MainScene, CardTestScene, CardStackTestScene, TriPeaksScene],
   scale: {
     mode: Phaser.Scale.RESIZE,
     autoCenter: Phaser.Scale.CENTER_BOTH,
