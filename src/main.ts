@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import './style.css';
 import { CardTestScene } from './CardTestScene';
+import { CardStackTestScene } from './CardStackTestScene';
 
 // Main Game Scene
 class MainScene extends Phaser.Scene {
@@ -62,6 +63,22 @@ class MainScene extends Phaser.Scene {
       fontStyle: 'bold',
     }).setOrigin(0.5);
 
+    // Test CardStack button
+    const testStackButton = this.add.rectangle(width / 2, height * 0.88, 200, 50, 0x059669)
+      .setInteractive({ useHandCursor: true })
+      .on('pointerover', () => testStackButton.setFillStyle(0x047857))
+      .on('pointerout', () => testStackButton.setFillStyle(0x059669))
+      .on('pointerdown', () => {
+        this.scene.start('CardStackTestScene');
+      });
+
+    this.add.text(width / 2, height * 0.88, 'TEST CARDSTACK', {
+      fontFamily: 'Arial',
+      fontSize: '16px',
+      color: '#ffffff',
+      fontStyle: 'bold',
+    }).setOrigin(0.5);
+
     // Instructions
     this.add.text(width / 2, height * 0.85, 'Click cards to eliminate them', {
       fontFamily: 'Arial',
@@ -84,7 +101,7 @@ const config: Phaser.Types.Core.GameConfig = {
   height: window.innerHeight,
   parent: 'app',
   backgroundColor: '#1a1a2e',
-  scene: [MainScene, CardTestScene],
+  scene: [MainScene, CardTestScene, CardStackTestScene],
   scale: {
     mode: Phaser.Scale.RESIZE,
     autoCenter: Phaser.Scale.CENTER_BOTH,
