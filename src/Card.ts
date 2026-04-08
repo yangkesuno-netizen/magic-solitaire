@@ -54,55 +54,66 @@ export class Card extends Phaser.GameObjects.Container {
   private createFront(): void {
     this.frontContainer = this.scene.add.container(0, 0);
     
-    // Card background (white rounded rectangle)
-    const bg = this.scene.add.rectangle(0, 0, 100, 140, 0xffffff);
-    bg.setStrokeStyle(2, 0x000000);
-    this.frontContainer.add(bg);
+    // Use AI-generated card front image
+    const textureKey = `card-${this.rank}-${this.suit}`;
     
-    // Top-left rank and suit
-    const topLeftRank = this.scene.add.text(-40, -60, this.rank, {
-      fontFamily: 'Arial',
-      fontSize: '24px',
-      color: '#' + this.suitColor.toString(16).padStart(6, '0'),
-      fontStyle: 'bold',
-    });
-    this.frontContainer.add(topLeftRank);
-    
-    const topLeftSuit = this.scene.add.text(-40, -40, this.getSuitSymbol(), {
-      fontFamily: 'Arial',
-      fontSize: '20px',
-      color: '#' + this.suitColor.toString(16).padStart(6, '0'),
-    });
-    this.frontContainer.add(topLeftSuit);
-    
-    // Center suit (large)
-    const centerSuit = this.scene.add.text(0, 0, this.getSuitSymbol(), {
-      fontFamily: 'Arial',
-      fontSize: '48px',
-      color: '#' + this.suitColor.toString(16).padStart(6, '0'),
-    });
-    centerSuit.setOrigin(0.5);
-    this.frontContainer.add(centerSuit);
-    
-    // Bottom-right rank and suit (rotated 180 degrees)
-    const bottomRightRank = this.scene.add.text(40, 60, this.rank, {
-      fontFamily: 'Arial',
-      fontSize: '24px',
-      color: '#' + this.suitColor.toString(16).padStart(6, '0'),
-      fontStyle: 'bold',
-    });
-    bottomRightRank.setOrigin(0.5);
-    bottomRightRank.setRotation(Math.PI);
-    this.frontContainer.add(bottomRightRank);
-    
-    const bottomRightSuit = this.scene.add.text(40, 40, this.getSuitSymbol(), {
-      fontFamily: 'Arial',
-      fontSize: '20px',
-      color: '#' + this.suitColor.toString(16).padStart(6, '0'),
-    });
-    bottomRightSuit.setOrigin(0.5);
-    bottomRightSuit.setRotation(Math.PI);
-    this.frontContainer.add(bottomRightSuit);
+    // Check if texture exists
+    if (this.scene.textures.exists(textureKey)) {
+      const cardImage = this.scene.add.image(0, 0, textureKey);
+      cardImage.setDisplaySize(100, 140);
+      this.frontContainer.add(cardImage);
+    } else {
+      // Fallback to graphics rendering
+      // Card background (white rounded rectangle)
+      const bg = this.scene.add.rectangle(0, 0, 100, 140, 0xffffff);
+      bg.setStrokeStyle(2, 0x000000);
+      this.frontContainer.add(bg);
+      
+      // Top-left rank and suit
+      const topLeftRank = this.scene.add.text(-40, -60, this.rank, {
+        fontFamily: 'Arial',
+        fontSize: '24px',
+        color: '#' + this.suitColor.toString(16).padStart(6, '0'),
+        fontStyle: 'bold',
+      });
+      this.frontContainer.add(topLeftRank);
+      
+      const topLeftSuit = this.scene.add.text(-40, -40, this.getSuitSymbol(), {
+        fontFamily: 'Arial',
+        fontSize: '20px',
+        color: '#' + this.suitColor.toString(16).padStart(6, '0'),
+      });
+      this.frontContainer.add(topLeftSuit);
+      
+      // Center suit (large)
+      const centerSuit = this.scene.add.text(0, 0, this.getSuitSymbol(), {
+        fontFamily: 'Arial',
+        fontSize: '48px',
+        color: '#' + this.suitColor.toString(16).padStart(6, '0'),
+      });
+      centerSuit.setOrigin(0.5);
+      this.frontContainer.add(centerSuit);
+      
+      // Bottom-right rank and suit (rotated 180 degrees)
+      const bottomRightRank = this.scene.add.text(40, 60, this.rank, {
+        fontFamily: 'Arial',
+        fontSize: '24px',
+        color: '#' + this.suitColor.toString(16).padStart(6, '0'),
+        fontStyle: 'bold',
+      });
+      bottomRightRank.setOrigin(0.5);
+      bottomRightRank.setRotation(Math.PI);
+      this.frontContainer.add(bottomRightRank);
+      
+      const bottomRightSuit = this.scene.add.text(40, 40, this.getSuitSymbol(), {
+        fontFamily: 'Arial',
+        fontSize: '20px',
+        color: '#' + this.suitColor.toString(16).padStart(6, '0'),
+      });
+      bottomRightSuit.setOrigin(0.5);
+      bottomRightSuit.setRotation(Math.PI);
+      this.frontContainer.add(bottomRightSuit);
+    }
     
     this.add(this.frontContainer);
   }

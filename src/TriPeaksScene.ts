@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { Card } from './Card';
 import { Pyramid } from './Pyramid';
 import { Stock } from './Stock';
+import { GameUI } from './GameUI';
 
 /**
  * Tri-Peaks 游戏主场景
@@ -10,10 +11,11 @@ import { Stock } from './Stock';
 export class TriPeaksScene extends Phaser.Scene {
   private pyramid!: Pyramid;
   private stock!: Stock;
-  private score: number = 0;
-  private scoreText!: Phaser.GameObjects.Text;
+  private gameUI!: GameUI;
   private cardsEliminated: number = 0;
   private winText!: Phaser.GameObjects.Text;
+  private gameOverText!: Phaser.GameObjects.Text;
+  private isGameOver: boolean = false;
 
   constructor() {
     super({ key: 'TriPeaksScene' });
@@ -96,25 +98,9 @@ export class TriPeaksScene extends Phaser.Scene {
    * 创建 UI
    */
   private createUI(): void {
-    // 分数显示
-    this.scoreText = this.add.text(650, 50, 'Score: 0', {
-      fontSize: '28px',
-      fontFamily: 'Arial',
-      color: '#ffffff'
-    });
-
-    // 剩余牌数显示
-    const remainingText = this.add.text(650, 90, 'Cards: 24', {
-      fontSize: '20px',
-      fontFamily: 'Arial',
-      color: '#aaaaaa'
-    });
-
-    // 更新剩余牌数 (每帧)
-    this.events.on('update', () => {
-      const remaining = this.stock.getCardsRemaining();
-      remainingText.setText(`Cards: ${remaining}`);
-    });
+    // 使用 GameUI 管理类
+    this.gameUI = new GameUI(this);
+    this.gameUI.create();
 
     // 胜利文本 (初始隐藏)
     this.winText = this.add.text(400, 300, '🎉 YOU WIN! 🎉', {
@@ -126,6 +112,17 @@ export class TriPeaksScene extends Phaser.Scene {
     });
     this.winText.setOrigin(0.5);
     this.winText.setVisible(false);
+
+    // 游戏结束文本 (初始隐藏)
+    this.gameOverText = this.add.text(400, 300, 'GAME OVER', {
+      fontSize: '48px',
+      fontFamily: 'Arial',
+      color: '#ff4444',
+      stroke: '#000000',
+      strokeThickness: 6
+    });
+    this.gameOverText.setOrigin(0.5);
+    this.gameOverText.setVisible(false);
 
     // 重新开始按钮 (初始隐藏)
     const restartButton = this.add.text(400, 380, 'Play Again', {
@@ -146,6 +143,14 @@ export class TriPeaksScene extends Phaser.Scene {
     this.events.on('win', () => {
       this.winText.setVisible(true);
       restartButton.setVisible(true);
+      this.gameUI.showVictory();
+    });
+
+    // 游戏结束时显示
+    this.events.on('gameOver', () => {
+      this.gameOverText.setVisible(true);
+      restartButton.setVisible(true);
+      this.gameUI.showGameOver();
     });
   }
 
@@ -255,13 +260,18 @@ export class TriPeaksScene extends Phaser.Scene {
     // 从废牌堆移除
     this.stock.removeTopWasteCard();
 
-    // 更新分数
-    this.score += 10;
-    this.scoreText.setText(`Score: ${this.score}`);
+    // 更新分数 (10 分/牌)
+    this.gameUI.addScore(10);
+
+    // 更新剩余牌数显示
+    this.gameUI.updateCardsRemaining(this.stock.getCardsRemaining());
 
     // 检查是否胜利
     if (this.pyramid.checkWin()) {
       this.handleWin();
+    } else {
+      // 检查是否游戏结束（无牌可出）
+      this.checkGameOver();
     }
   }
 
@@ -274,10 +284,47 @@ export class TriPeaksScene extends Phaser.Scene {
   }
 
   /**
+   * 检查游戏结束（无牌可出）
+   */
+  private checkGameOver(): void {
+    if (this.isGameOver) return;
+
+    // 获取废牌堆顶牌
+    const wasteCard = this.stock.getTopWasteCard();
+    if (!wasteCard || !wasteCard.isFaceUp()) {
+      // 如果没有废牌，检查是否能发牌
+      if (!this.stock.canDeal()) {
+        this.isGameOver = true;
+        this.events.emit('gameOver');
+      }
+      return;
+    }
+
+    // 检查是否有可消除的金字塔牌
+    const allCards = this.pyramid.getAllCards();
+    let hasValidMove = false;
+
+    for (const card of allCards) {
+      if (!card.isEliminatedCard() && this.pyramid.isCardExposed(card)) {
+        if (Math.abs(wasteCard.getValue() - card.getValue()) === 1) {
+          hasValidMove = true;
+          break;
+        }
+      }
+    }
+
+    // 如果没有有效移动且无法发牌
+    if (!hasValidMove && !this.stock.canDeal()) {
+      this.isGameOver = true;
+      this.events.emit('gameOver');
+    }
+  }
+
+  /**
    * 获取当前分数
    */
   getScore(): number {
-    return this.score;
+    return this.gameUI.getScore();
   }
 
   /**
@@ -285,5 +332,12 @@ export class TriPeaksScene extends Phaser.Scene {
    */
   getCardsEliminated(): number {
     return this.cardsEliminated;
+  }
+
+  /**
+   * 窗口大小变化处理
+   */
+  resize(width: number, height: number): void {
+    this.gameUI?.resize(width, height);
   }
 }
