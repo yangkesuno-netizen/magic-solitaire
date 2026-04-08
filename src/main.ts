@@ -25,6 +25,12 @@ class MainScene extends Phaser.Scene {
         this.load.image(key, path);
       }
     }
+    
+    console.log('🎴 Loading card assets...');
+    
+    this.load.on('complete', () => {
+      console.log('✅ All card assets loaded!');
+    });
   }
 
   create(): void {
