@@ -1,0 +1,6 @@
+docs: Add error prevention plan
+
+- Document how to prevent today's mistakes
+- Institutional checklists and procedures
+- Automated validation scripts
+- Standard testing workflows
