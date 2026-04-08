@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import './style.css';
+import { CardTestScene } from './CardTestScene';
 
 // Main Game Scene
 class MainScene extends Phaser.Scene {
@@ -45,6 +46,22 @@ class MainScene extends Phaser.Scene {
       fontStyle: 'bold',
     }).setOrigin(0.5);
 
+    // Test Card button
+    const testButton = this.add.rectangle(width / 2, height * 0.78, 200, 50, 0x7c3aed)
+      .setInteractive({ useHandCursor: true })
+      .on('pointerover', () => testButton.setFillStyle(0x5b21b6))
+      .on('pointerout', () => testButton.setFillStyle(0x7c3aed))
+      .on('pointerdown', () => {
+        this.scene.start('CardTestScene');
+      });
+
+    this.add.text(width / 2, height * 0.78, 'TEST CARDS', {
+      fontFamily: 'Arial',
+      fontSize: '18px',
+      color: '#ffffff',
+      fontStyle: 'bold',
+    }).setOrigin(0.5);
+
     // Instructions
     this.add.text(width / 2, height * 0.85, 'Click cards to eliminate them', {
       fontFamily: 'Arial',
@@ -67,7 +84,7 @@ const config: Phaser.Types.Core.GameConfig = {
   height: window.innerHeight,
   parent: 'app',
   backgroundColor: '#1a1a2e',
-  scene: [MainScene],
+  scene: [MainScene, CardTestScene],
   scale: {
     mode: Phaser.Scale.RESIZE,
     autoCenter: Phaser.Scale.CENTER_BOTH,

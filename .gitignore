@@ -38,6 +38,7 @@ coverage
 
 # Misc
 commit_msg.txt
+*.bat
 
 # Sessions and dialogs (contain sensitive data)
 sessions/
