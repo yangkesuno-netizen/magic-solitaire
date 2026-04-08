@@ -38,3 +38,10 @@ coverage
 
 # Misc
 commit_msg.txt
+
+# Sessions and dialogs (contain sensitive data)
+sessions/
+dialog/
+chats.json
+agent.json
+jobs.json
