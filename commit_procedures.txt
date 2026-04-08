@@ -1,0 +1,8 @@
+docs: Add mandatory checklists and procedures
+
+- PRE_COMMIT_CHECKLIST.md: Must-check items before every commit
+- SKILL_USAGE_GUIDE.md: Standard process for using skills
+- TEST_PROCEDURE.md: Complete testing workflow
+- pre_commit_check.bat: Automated pre-commit validation
+
+Purpose: Prevent today's mistakes from happening again
