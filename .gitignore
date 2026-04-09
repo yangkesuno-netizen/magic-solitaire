@@ -41,6 +41,7 @@ commit_msg.txt
 *.bat
 !pre_commit_check.bat
 !quality_gate.bat
+!scripts/log_check.bat
 
 # Sessions and dialogs (contain sensitive data)
 sessions/

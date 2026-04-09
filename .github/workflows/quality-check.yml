@@ -1,0 +1,68 @@
+name: Pre-Commit Check
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  quality-check:
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Build
+        run: npm run build
+        shell: cmd
+      
+      - name: Check dist directory
+        run: |
+          if not exist "dist\assets" (
+            echo "❌ dist/assets 不存在"
+            exit /b 1
+          )
+          if not exist "dist\assets\cards" (
+            echo "⚠️ dist/assets/cards 不存在"
+            exit /b 1
+          )
+          echo "✅ dist 目录检查通过"
+        shell: cmd
+      
+      - name: Run tests
+        run: npm test
+        shell: cmd
+      
+      - name: Quality Gate
+        run: .\quality_gate.bat
+        shell: cmd
+      
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist
+          path: dist/
+          retention-days: 7
+      
+      - name: Report status
+        if: always()
+        run: |
+          echo "================================"
+          echo "  Quality Check Report"
+          echo "================================"
+          echo "Commit: ${{ github.sha }}"
+          echo "Branch: ${{ github.ref }}"
+          echo "Status: ${{ job.status }}"
+          echo "================================"
+        shell: bash
