@@ -1,0 +1,3 @@
+test: Verify pre-commit hook mechanism
+
+Testing the 5-layer enforcement system
