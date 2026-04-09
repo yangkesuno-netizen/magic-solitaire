@@ -1,0 +1,4 @@
+fix: Update pre-commit hook for Windows
+
+- Convert bash script to batch file
+- Ensure hook runs on Windows Git
