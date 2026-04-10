@@ -14,22 +14,17 @@ class MainScene extends Phaser.Scene {
     // Load card back texture
     this.load.image('card-back', 'assets/cards/back.png');
     
-    // Load all 52 card fronts
-    const suits = ['hearts', 'diamonds', 'clubs', 'spades'];
-    const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
-    
-    for (const suit of suits) {
-      for (const rank of ranks) {
-        const key = `card-${rank}-${suit}`;
-        const path = `assets/cards/${rank}_${suit}.png`;
-        this.load.image(key, path);
-      }
-    }
-    
-    console.log('🎴 Loading card assets...');
+    // Set load progress callback
+    this.load.on('progress', (value: number) => {
+      console.log(`Loading: ${Math.round(value * 100)}%`);
+    });
     
     this.load.on('complete', () => {
-      console.log('✅ All card assets loaded!');
+      console.log('✅ All assets loaded!');
+    });
+    
+    this.load.on('error', (file: any) => {
+      console.error('❌ Failed to load:', file.src);
     });
   }
 
